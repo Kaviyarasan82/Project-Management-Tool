@@ -1,0 +1,40 @@
+/* src/pages/LoginPage.css */
+.login-modal-content {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  max-width: 90%;
+}
+
+.login-modal-content h1 {
+  text-align: center;
+  color: #333;
+}
+
+.login-modal-content p {
+  text-align: center;
+  color: #666;
+}
+
+.login-modal-content a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.login-modal-content a:hover {
+  text-decoration: underline;
+}
+
+.close-button {
+  margin-top: 20px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .login-modal-content {
+    width: 80%;
+    padding: 15px;
+  }
+}

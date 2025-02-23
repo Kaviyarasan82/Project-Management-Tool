@@ -1,0 +1,286 @@
+.main-page {
+  padding: 20px;
+  background-color: #f5f5f5; /* Light gray background, as requested */
+  min-height: 100vh;
+  position: relative;
+  transition: margin-left 0.3s ease, width 0.3s ease; /* Smooth transition for sidebar toggle */
+  width: 100%; /* Full width when sidebar is closed */
+  margin-left: 0; /* Start from the left when sidebar is closed */
+}
+
+.dashboard-content {
+  padding: 40px 20px; /* Increased padding for a full-page feel */
+  max-width: 100%; /* Span the full width of the page */
+  margin: 0; /* Remove margins */
+  background-color: transparent; /* Remove white background */
+  border-radius: 0; /* Remove rounded corners */
+  box-shadow: none; /* Remove shadow */
+  color: #333; /* Ensure text is visible on light gray background */
+}
+
+.main-page h1 {
+  color: #333;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.no-projects-text {
+  color: #444;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+.account-tip {
+  color: #666;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 40px;
+  transition: margin-left 0.3s ease; /* Smooth transition for sidebar toggle */
+}
+
+.project-container {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s; /* Updated for consistency */
+}
+
+.project-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.project-container h3 {
+  color: #333;
+  margin: 0 0 10px 0;
+  font-size: 1.5rem;
+}
+
+.project-container p {
+  color: #666;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.plus-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  min-width: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plus-button:hover {
+  background-color: #0056b3;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 400px;
+}
+
+.modal-content h2 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.modal-content button {
+  margin: 10px;
+  padding: 10px 20px;
+}
+
+.initial-modal {
+  width: 500px; /* Match the width in the second image */
+  max-width: 90%;
+  padding: 20px; /* Adjusted padding for exact spacing */
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.initial-modal h2 {
+  color: #333;
+  font-size: 1.5rem;
+  margin-bottom: 20px; /* Increased margin for spacing */
+  font-weight: 500;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 15px; /* Exact gap between buttons as in the image */
+  justify-content: center;
+  margin-top: 20px; /* Added spacing above buttons */
+}
+
+.create-project-modal {
+  width: 500px;
+  max-width: 90%;
+}
+
+.project-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.project-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.project-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 7, 255, 0.3);
+}
+
+.project-popup {
+  width: 600px;
+  max-width: 90%;
+  text-align: left;
+}
+
+.project-popup ul {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.project-popup li {
+  padding: 10px;
+  border-bottom: 1px solid #e0e0e0;
+  color: #444;
+}
+
+.join-project-modal {
+  width: 500px; /* Match the width of other modals */
+  max-width: 90%;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.join-project-modal .modal-actions .MuiButton-containedPrimary {
+  background-color: #28a745; /* Green color to match "Join Project" button in initial modal */
+  color: #fff;
+}
+
+.join-project-modal .modal-actions .MuiButton-containedPrimary:hover {
+  background-color: #218838; /* Darker green for hover state */
+}
+
+.join-project-modal .modal-actions .MuiButton-outlined {
+  color: #28a745; /* Green color for outlined button */
+  border-color: #28a745;
+}
+
+.join-project-modal .modal-actions .MuiButton-outlined:hover {
+  background-color: rgba(40, 167, 69, 0.1); /* Subtle green hover effect */
+  border-color: #218838; /* Darker green on hover */
+}
+
+@media (max-width: 768px) {
+  .join-project-modal {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .dashboard-content {
+    padding: 20px 10px; /* Reduced padding on mobile */
+  }
+
+  .main-page {
+    padding: 20px 10px; /* Reduced padding on mobile */
+  }
+
+  .main-page h1 {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .no-projects-text {
+    font-size: 1rem;
+  }
+
+  .projects-grid {
+    grid-template-columns: 1fr; /* Stack projects vertically on mobile */
+  }
+
+  .project-container {
+    padding: 15px;
+  }
+
+  .initial-modal, .create-project-modal {
+    width: 90%;
+    padding: 15px; /* Reduced padding on mobile */
+  }
+
+  .initial-modal h2 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+  }
+
+  .modal-actions {
+    gap: 10px; /* Reduced gap on mobile */
+    margin-top: 15px;
+  }
+
+  .project-popup {
+    width: 90%;
+  }
+
+  .plus-button {
+    width: 40px;
+    height: 40px;
+    bottom: 10px;
+    right: 10px;
+  }
+}

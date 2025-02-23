@@ -1,0 +1,12 @@
+.footer {
+    border-top: 2px solid #4CAF50;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .footer .MuiButton-root {
+    transition: transform 0.3s ease;
+  }
+  
+  .footer .MuiButton-root:hover {
+    transform: scale(1.05);
+  }

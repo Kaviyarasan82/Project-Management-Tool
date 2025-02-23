@@ -1,0 +1,10 @@
+/* src/components/Logo.css */
+.logo {
+  height: 40px;
+  width: 40px;
+}
+
+.logo img {
+  height: 100%;
+  width: 100%;
+}

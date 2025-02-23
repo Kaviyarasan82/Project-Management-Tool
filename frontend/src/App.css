@@ -1,0 +1,89 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.content-wrapper {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.main-content {
+  flex: 1;
+  padding: 60px 20px 20px; /* Padding to account for fixed navbar */
+  background-color: #f5f5f5;
+  overflow-y: auto;
+  transition: margin-left 0.3s ease, width 0.3s ease; /* Smooth transition for sidebar toggle */
+  min-height: calc(100vh - 60px); /* Ensure it covers the entire page below navbar */
+  width: 100%; /* Full width when sidebar is closed */
+  margin-left: 0; /* Start from the left when sidebar is closed */
+}
+
+.main-content.sidebar-open {
+  margin-left: 250px; /* Shift to the right by sidebar width */
+  width: calc(100% - 250px); /* Adjust width to fit beside sidebar */
+}
+
+.sidebar {
+  height: 100%;
+  width: 250px;
+  position: fixed;
+  top: 60px; /* Adjust to account for fixed navbar height */
+  left: -250px;
+  background-color: #f5f5f5;
+  padding: 10px 0;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  transition: left 0.3s ease;
+  z-index: 1000; /* Ensure sidebar stays above main content */
+  border-right: 1px solid #e0e0e0;
+  border-radius: 0 8px 8px 0;
+}
+
+.sidebar.open {
+  left: 0; /* Sidebar slides in from the left */
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000; /* Above navbar and sidebar */
+}
+
+.login-modal {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  max-width: 90%;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding: 60px 10px 20px;
+  }
+
+  .main-content.sidebar-open {
+    margin-left: 200px; /* Narrower sidebar on mobile */
+    width: calc(100% - 200px); /* Adjust width for mobile */
+  }
+
+  .sidebar {
+    width: 200px; /* Narrower sidebar on mobile */
+  }
+
+  .login-modal {
+    width: 80%;
+    padding: 15px;
+  }
+}
