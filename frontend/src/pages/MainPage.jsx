@@ -1,21 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './MainPage.css';
 import { Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import axios from 'axios';
 
 const MainPage = () => {
   const [showInitialModal, setShowInitialModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showJoinModal, setShowJoinModal] = useState(false); // State for join project modal
-  const [showProjectPopup, setShowProjectPopup] = useState(null); // For project popup
-  const [projects, setProjects] = useState([]); // Store created projects
+  const [showJoinModal, setShowJoinModal] = useState(false);
+  const [showProjectPopup, setShowProjectPopup] = useState(null);
+  const [projects, setProjects] = useState([]);
   const [projectDetails, setProjectDetails] = useState({
     name: '',
     description: '',
     files: [],
-    teamSize: '', // Team size from previous update
+    teamSize: '',
   });
-  const [joinCode, setJoinCode] = useState(''); // State for join code/URL
+  const [joinCode, setJoinCode] = useState('');
+
+  // Fetch projects on component mount
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get('/api/projects');
+        console.log('Fetched projects:', response.data);
+        setProjects(response.data);
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+      }
+    };
+    fetchProjects();
+  }, []);
 
   const handlePlusClick = () => {
     setShowInitialModal(true);
@@ -28,30 +43,39 @@ const MainPage = () => {
 
   const handleJoinProjectClick = () => {
     setShowInitialModal(false);
-    setShowJoinModal(true); // Open the join project modal
+    setShowJoinModal(true);
   };
 
-  const handleCreateProject = () => {
+  const handleCreateProject = async () => {
     if (projectDetails.name.trim() && projectDetails.description.trim() && projectDetails.files.length > 0 && projectDetails.teamSize.trim()) {
-      // Ensure teamSize is a valid number
       const teamSize = parseInt(projectDetails.teamSize, 10);
       if (isNaN(teamSize) || teamSize <= 0) {
         alert('Please enter a valid team size (a positive number).');
         return;
       }
 
-      setProjects([
-        ...projects,
-        {
-          id: Date.now(), // Unique ID for each project
-          name: projectDetails.name,
-          description: projectDetails.description,
-          files: projectDetails.files,
-          teamSize: teamSize, // Store team size as a number
-        },
-      ]);
-      setProjectDetails({ name: '', description: '', files: [], teamSize: '' }); // Reset form
-      setShowCreateModal(false); // Close modal
+      const formData = new FormData();
+      formData.append('name', projectDetails.name);
+      formData.append('description', projectDetails.description);
+      formData.append('teamSize', teamSize);
+      projectDetails.files.forEach(file => {
+        formData.append('files', file);
+      });
+
+      try {
+        const response = await axios.post('/api/projects', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        console.log('Project created:', response.data);
+        setProjects([...projects, response.data]);
+        setProjectDetails({ name: '', description: '', files: [], teamSize: '' });
+        setShowCreateModal(false);
+      } catch (error) {
+        console.error('Error creating project:', error);
+        alert('Failed to create project. Please try again.');
+      }
     } else {
       alert('Please fill in all fields and upload at least one file.');
     }
@@ -61,11 +85,7 @@ const MainPage = () => {
     const files = Array.from(e.target.files);
     setProjectDetails({
       ...projectDetails,
-      files: files.map(file => ({
-        name: file.name,
-        size: file.size,
-        type: file.type,
-      })),
+      files: files,
     });
   };
 
@@ -74,7 +94,6 @@ const MainPage = () => {
   };
 
   const handleDownload = (project) => {
-    // Simulate downloading files (in a real app, this would involve backend integration)
     const zipContent = project.files.map(file => `File: ${file.name}, Size: ${file.size}, Type: ${file.type}\n`).join('');
     const blob = new Blob([zipContent], { type: 'text/plain' });
     const url = window.URL.createObjectURL(blob);
@@ -87,13 +106,19 @@ const MainPage = () => {
     window.URL.revokeObjectURL(url);
   };
 
-  const handleJoinSubmit = (e) => {
+  const handleJoinSubmit = async (e) => {
     e.preventDefault();
     if (joinCode.trim()) {
-      // Here you would typically send the joinCode to a backend to validate and join the project
-      alert(`Joining project with code/URL: ${joinCode}`);
-      setJoinCode(''); // Reset join code
-      setShowJoinModal(false); // Close the modal
+      try {
+        const response = await axios.post('/api/projects/join', { joinCode });
+        console.log('Joined project:', response.data);
+        setProjects([...projects, response.data]);
+        setJoinCode('');
+        setShowJoinModal(false);
+      } catch (error) {
+        console.error('Error joining project:', error);
+        alert('Failed to join project. Please check the join code and try again.');
+      }
     } else {
       alert('Please enter a valid join code or URL.');
     }
@@ -105,23 +130,22 @@ const MainPage = () => {
         <h1>Your Dashboard</h1>
         <p className="subtitle">Manage your projects efficiently!</p>
         
-        {/* Show project containers only if there are projects, without default text */}
         {projects.length > 0 ? (
           <div className="projects-grid">
             {projects.map(project => (
               <div
-                key={project.id}
+                key={project._id}
                 className="project-container"
-                onClick={() => handleProjectClick(project.id)}
+                onClick={() => handleProjectClick(project._id)}
               >
                 <h3>{project.name}</h3>
                 <p>{project.description}</p>
-                <p>Team Size: {project.teamSize} members</p> {/* Display team size in project card */}
+                <p>Team Size: {project.teamSize} members</p>
+                <p>Join Code: {project.joinCode}</p> {/* Added to display join code */}
               </div>
             ))}
           </div>
         ) : (
-          // Show default text only if there are no projects
           <>
             <p className="no-projects-text">No projects yet. Add a project to get started.</p>
             <p className="account-tip">Don’t see your projects? Try another account</p>
@@ -137,7 +161,6 @@ const MainPage = () => {
         <AddIcon />
       </Button>
 
-      {/* Initial Modal (What would you like to do?) */}
       {showInitialModal && (
         <div className="modal" onClick={() => setShowInitialModal(false)}>
           <div className="modal-content initial-modal" onClick={(e) => e.stopPropagation()}>
@@ -157,7 +180,6 @@ const MainPage = () => {
         </div>
       )}
 
-      {/* Create Project Modal (Form) */}
       {showCreateModal && (
         <div className="modal" onClick={() => setShowCreateModal(false)}>
           <div className="modal-content create-project-modal" onClick={(e) => e.stopPropagation()}>
@@ -182,7 +204,7 @@ const MainPage = () => {
                 value={projectDetails.teamSize}
                 onChange={(e) => setProjectDetails({ ...projectDetails, teamSize: e.target.value })}
                 className="project-input"
-                min="1" // Ensure only positive numbers
+                min="1"
               />
               <input
                 type="file"
@@ -203,7 +225,6 @@ const MainPage = () => {
         </div>
       )}
 
-      {/* Join Project Modal (New) */}
       {showJoinModal && (
         <div className="modal" onClick={() => setShowJoinModal(false)}>
           <div className="modal-content join-project-modal" onClick={(e) => e.stopPropagation()}>
@@ -229,18 +250,18 @@ const MainPage = () => {
         </div>
       )}
 
-      {/* Project Details Popup */}
       {showProjectPopup && (
         <div className="modal" onClick={() => setShowProjectPopup(null)}>
           <div className="modal-content project-popup" onClick={(e) => e.stopPropagation()}>
-            {projects.find(p => p.id === showProjectPopup) && (
+            {projects.find(p => p._id === showProjectPopup) && (
               <>
-                <h2>{projects.find(p => p.id === showProjectPopup).name}</h2>
-                <p>{projects.find(p => p.id === showProjectPopup).description}</p>
-                <p>Team Size: {projects.find(p => p.id === showProjectPopup).teamSize} members</p> {/* Display team size in popup */}
+                <h2>{projects.find(p => p._id === showProjectPopup).name}</h2>
+                <p>{projects.find(p => p._id === showProjectPopup).description}</p>
+                <p>Team Size: {projects.find(p => p._id === showProjectPopup).teamSize} members</p>
+                <p>Join Code: {projects.find(p => p._id === showProjectPopup).joinCode}</p>
                 <h3>Files/Folders:</h3>
                 <ul>
-                  {projects.find(p => p.id === showProjectPopup).files.map((file, index) => (
+                  {projects.find(p => p._id === showProjectPopup).files.map((file, index) => (
                     <li key={index}>
                       {file.name} ({file.type}, {file.size} bytes)
                     </li>
@@ -249,7 +270,7 @@ const MainPage = () => {
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={() => handleDownload(projects.find(p => p.id === showProjectPopup))}
+                  onClick={() => handleDownload(projects.find(p => p._id === showProjectPopup))}
                 >
                   Download Project
                 </Button>
