@@ -1,0 +1,8 @@
+backend/
+  ├── models/
+  │   └── Project.js
+  ├── routes/
+  │   └── projectRoutes.js
+  ├── package.json
+  ├── server.js
+  └── .env
