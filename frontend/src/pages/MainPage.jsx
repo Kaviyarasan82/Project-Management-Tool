@@ -4,7 +4,7 @@ import { Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import axios from 'axios';
 
-const MainPage = () => {
+const MainPage = ({ searchQuery }) => {
   const [showInitialModal, setShowInitialModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
@@ -124,15 +124,27 @@ const MainPage = () => {
     }
   };
 
+  // Filter projects based on search query
+  const filteredProjects = searchQuery
+    ? projects.filter(project =>
+        project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        project.joinCode.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : projects;
+
   return (
     <div className="main-page">
       <div className="dashboard-content">
-        <h1>Your Dashboard</h1>
-        <p className="subtitle">Manage your projects efficiently!</p>
+        {projects.length === 0 && (
+          <>
+            <h1>Your Dashboard</h1>
+            <p className="subtitle">Manage your projects efficiently!</p>
+          </>
+        )}
         
-        {projects.length > 0 ? (
+        {filteredProjects.length > 0 ? (
           <div className="projects-grid">
-            {projects.map(project => (
+            {filteredProjects.map(project => (
               <div
                 key={project._id}
                 className="project-container"
@@ -141,7 +153,7 @@ const MainPage = () => {
                 <h3>{project.name}</h3>
                 <p>{project.description}</p>
                 <p>Team Size: {project.teamSize} members</p>
-                <p>Join Code: {project.joinCode}</p> {/* Added to display join code */}
+                <p>Join Code: {project.joinCode}</p>
               </div>
             ))}
           </div>

@@ -1,12 +1,12 @@
-// src/components/Navbar.jsx
 import React, { useState } from 'react';
 import './Navbar.css';
 import { IconButton, Menu, MenuItem, Button } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
-const Navbar = ({ toggleSidebar, openLoginModal }) => {
+const Navbar = ({ toggleSidebar, openLoginModal, onSearch }) => {
   const [anchorElLogin, setAnchorElLogin] = useState(null); // For login dropdown
   const [anchorElLogo, setAnchorElLogo] = useState(null); // For logo dropdown
+  const [searchQuery, setSearchQuery] = useState(''); // State for search input
 
   const handleLoginClick = (event) => {
     setAnchorElLogin(event.currentTarget);
@@ -29,12 +29,27 @@ const Navbar = ({ toggleSidebar, openLoginModal }) => {
     handleLoginClose();
   };
 
+  // Handle search input change and trigger the search callback
+  const handleSearchChange = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    if (onSearch) {
+      onSearch(query); // Pass the search query to the parent (App.jsx or MainPage.jsx)
+    }
+  };
+
   return (
     <nav className="navbar">
       <button className="sidebar-toggle" onClick={toggleSidebar}>
         <span>☰</span>
       </button>
-      <input type="text" placeholder="Search..." className="search-bar" />
+      <input
+        type="text"
+        placeholder="Search..."
+        className="search-bar"
+        value={searchQuery}
+        onChange={handleSearchChange}
+      />
       <Button
         variant="contained"
         color="primary"

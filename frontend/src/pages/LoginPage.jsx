@@ -1,9 +1,8 @@
-// src/pages/LoginPage.jsx
 import React from 'react';
 import './LoginPage.css';
 import { Button, TextField } from '@mui/material';
 
-const LoginPage = ({ onClose }) => {
+const LoginPage = ({ onClose, onSwitchToSignUp }) => {
   return (
     <div className="login-modal-content">
       <h1>Sign in</h1>
@@ -28,7 +27,10 @@ const LoginPage = ({ onClose }) => {
         Sign in with Google
       </Button>
       <p>
-        Don’t have an account? <a href="#" onClick={(e) => { e.preventDefault(); onClose(); }}>Sign up</a>
+        Don’t have an account?{' '}
+        <a href="#" onClick={(e) => { e.preventDefault(); onSwitchToSignUp(); }}>
+          Sign up
+        </a>
       </p>
       <Button variant="outlined" onClick={onClose} className="close-button">
         Close
