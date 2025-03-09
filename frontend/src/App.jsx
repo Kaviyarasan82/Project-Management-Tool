@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import MainPage from './pages/MainPage';
@@ -8,36 +8,32 @@ import SignUpPage from './pages/SignUpPage';
 import './App.css';
 
 function App() {
-  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
-  const [isLoginModalOpen, setIsLoginModalOpen] = React.useState(false);
-  const [isSignUpModalOpen, setIsSignUpModalOpen] = React.useState(false);
-  const [searchQuery, setSearchQuery] = useState(''); // State for search query
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setIsLoginModalOpen(true);
+    }
+  }, []);
 
-  const openLoginModal = () => {
-    setIsLoginModalOpen(true);
-    setIsSignUpModalOpen(false);
-  };
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const openLoginModal = () => { setIsLoginModalOpen(true); setIsSignUpModalOpen(false); };
+  const closeLoginModal = () => setIsLoginModalOpen(false);
+  const openSignUpModal = () => { setIsSignUpModalOpen(true); setIsLoginModalOpen(false); };
+  const closeSignUpModal = () => setIsSignUpModalOpen(false);
 
-  const closeLoginModal = () => {
-    setIsLoginModalOpen(false);
-  };
+  const handleSearch = (query) => setSearchQuery(query);
 
-  const openSignUpModal = () => {
-    setIsSignUpModalOpen(true);
-    setIsLoginModalOpen(false);
-  };
-
-  const closeSignUpModal = () => {
-    setIsSignUpModalOpen(false);
-  };
-
-  // Handle search query from Navbar
-  const handleSearch = (query) => {
-    setSearchQuery(query);
+  const ProtectedRoute = ({ children }) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      return <Navigate to="/login" replace />;
+    }
+    return children;
   };
 
   return (
@@ -48,8 +44,42 @@ function App() {
           {isSidebarOpen && <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />}
           <main className={`main-content ${isSidebarOpen ? 'sidebar-open' : ''}`}>
             <Routes>
-              <Route path="/" element={<MainPage searchQuery={searchQuery} />} />
-              <Route path="/login" element={<LoginPage />} />
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <MainPage searchQuery={searchQuery} />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/login"
+                element={
+                  isLoginModalOpen ? (
+                    <div className="modal-overlay" onClick={closeLoginModal}>
+                      <div className="login-modal" onClick={(e) => e.stopPropagation()}>
+                        <LoginPage onClose={closeLoginModal} onSwitchToSignUp={openSignUpModal} />
+                      </div>
+                    </div>
+                  ) : (
+                    <Navigate to="/" />
+                  )
+                }
+              />
+              <Route
+                path="/signup"
+                element={
+                  isSignUpModalOpen ? (
+                    <div className="modal-overlay" onClick={closeSignUpModal}>
+                      <div className="login-modal" onClick={(e) => e.stopPropagation()}>
+                        <SignUpPage onClose={closeSignUpModal} onSwitchToLogin={openLoginModal} />
+                      </div>
+                    </div>
+                  ) : (
+                    <Navigate to="/" />
+                  )
+                }
+              />
             </Routes>
           </main>
         </div>

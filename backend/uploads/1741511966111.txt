@@ -1,0 +1,19 @@
+project-management-tool/
+│── src/
+│   ├── components/
+│   │   ├── Sidebar.jsx
+│   │   ├── Navbar.jsx
+│   │   ├── DropdownMenu.jsx
+│   │   ├── FloatingButton.jsx
+│   ├── pages/
+│   │   ├── Dashboard.jsx
+│   ├── styles/  <-- New folder for styles
+│   │   ├── navbar.css
+│   │   ├── sidebar.css
+│   │   ├── floatingButton.css
+│   │   ├── dashboard.css
+│   ├── App.jsx
+│   ├── main.jsx
+│── public/
+│── index.html
+│── package.json
